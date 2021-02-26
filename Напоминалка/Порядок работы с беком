@@ -1,0 +1,171 @@
+Порядок работы с бэкендом:
+
+0. Создание проекта - https://metanit.com/sharp/aspnet5/3.1.php
+"Веб приложение ASP.Net Core"
+API or MVC
+
+
+
+
+
+
+
+1. Создание необходимых классов моделей и их свойств для контекста
+
+
+2. В управлении пакетами NuGet устанваливаем Microsoft.EntityFrameworkCore.SqlServer
+
+
+3. Создаем сам класс с контекстом в папке с моделями:
+
+public class ИмяContext : DbContext
+{
+    public DbSet<Тип_модели> Название_группы { get; set; }
+    public DbSet<User> Users { get; set; }
+
+    public UserContext(DbContextOptions<UserContext> options)
+        : base(options)
+    {
+        Database.EnsureCreated();
+    }
+}
+
+
+
+
+4. Создание класса инициализатора базы данных в моделях:
+
+public static class SampleData
+{
+    public static void Initialize(MobileContext context)
+    {
+        if (!context.Phones.Any())
+        {
+            context.Phones.AddRange(
+                new Phone
+                {
+                    Name = "iPhone X",
+                    Company = "Apple",
+                    Price = 600
+                },
+                new Phone
+                {
+                    Name = "Samsung Galaxy Edge",
+                    Company = "Samsung",
+                    Price = 550
+                },
+                new Phone
+                {
+                    Name = "Pixel 3",
+                    Company = "Google",
+                    Price = 500
+                }
+            );
+            context.SaveChanges();
+        }
+    }
+}
+
+Чтобы инициализатор базы данных вызывался при старте приложения, изменим класс Program следующим образом:
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var host = CreateHostBuilder(args).Build();
+        using (var scope = host.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<MobileContext>();
+            SampleData.Initialize(context);
+        }
+        host.Run();
+    }
+}
+
+
+В HomeController добавим переменную и присвоим ей базу данных в конструкторе
+MobileContext db;
+public HomeController(MobileContext context)
+{
+    db = context;
+}
+
+
+
+5. Чтобы подключаться к базе данных, нам надо задать параметры подключения. Для этого изменим файл appsettings.json. По умолчанию он содержит только настройки логгирования:
+
+"ConnectionStrings": {
+	"DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=mobilestoredb;Trusted_Connection=True;MultipleActiveResultSets=true"
+},
+
+
+
+6. Меняем/Добавляем в Startup: 
+
+public void ConfigureServices(IServiceCollection services)
+{
+    string connection = Configuration.GetConnectionString("DefaultConnection");
+    services.AddDbContext<ИмяContext>(options => options.UseSqlServer(connection)); //Добавление использования контекста
+    services.AddControllers();
+    services.AddCors();
+}
+
+
++ В Configure добавляем:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	app.UseExceptionHandler("/error");  // --> Для возврата ошибок в виде json (инструкция в следующем пункте)
+	
+	app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); // --> Для обхода корс безопасности
+
+	app.UseEndpoints(endpoints =>      // --> Устанавливаем путь по дефолту
+	{
+	    endpoints.MapControllerRoute(
+	        name: "default",
+	        pattern: "{controller=Home}/{action=Index}/{id?}");
+	});
+}
+
+
+
+
+
+
+7. Создание возврата ошибок в виде JSON 
+
+- Создаем контроллер ошибок(ErrorController): 
+
+[ApiController]
+public class ErrorController : ControllerBase
+{
+    [Route("/error")]
+    public IActionResult Error()
+    {
+        var exception = HttpContext.Features.Get<IExceptionHandlerFeature>();
+        var statusCode = 400;
+        return Problem(detail: exception.Error.Message, statusCode: (int)statusCode);
+    }
+}
+
+
+
+
+
+
+
+Допонительные пункты:
+1. Создание своих ошибок:
+
+- Папка со своими ошибками (Exeption)
+- Класс со своей ошибкой:
+
+public class NotFoundException : Exception
+{
+    public int Key { get; set; }
+
+    public NotFoundException(string message, int key) : base(message)
+    {
+        Key = key;
+    }
+}

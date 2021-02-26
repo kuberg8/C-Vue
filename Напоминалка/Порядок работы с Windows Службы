@@ -1,0 +1,128 @@
+Порядок работы с Windows Service:
+
+https://www.youtube.com/watch?v=XU9SogmklK4&list=PL-ss7IpVOiB7zD2KpSoaKev4Yb4NByuk-&index=18
+
+
+
+1. Создание проекта в папке с wcf проетом - "Служба Windows"
+
+
+2. Добавить ссылки в проект:
+
+- Ссылку на wcf проект
+- System.ServiceModel
+
+
+3. Установить пакет EntityFramework в windows службе
+
+
+
+4. Изменить Service1.cs
+
+- using System.ServiceModel;
+
+
+namespace WindowsService1
+{
+    public partial class Service1 : ServiceBase
+    {
+        private ServiceHost _host;
+
+        public Service1()
+        {
+            InitializeComponent();
+        }
+
+        protected override void OnStart(string[] args)
+        {
+            _host = new ServiceHost(typeof(WcfService1.Service1));
+            _host.Open();
+        }
+
+        protected override void OnStop()
+        {
+            if (_host != null) _host.Close();
+        }
+    }
+}
+
+
+
+
+5. Измненить App.Config 
+
+БАЗУ УКАЗАТЬ СВОЮ
+
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+  </configSections>
+	<connectionStrings>
+		<add name="DBConnection" connectionString="data source=(localdb)\MSSQLLocalDB;Initial Catalog=mainstoredb;Integrated Security=True;" providerName="System.Data.SqlClient" />
+	</connectionStrings>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
+    </startup>
+	<system.serviceModel>
+		<services>
+			<service name="WcfService1.Service1" behaviorConfiguration="debug">
+				<endpoint address="Service1" binding="basicHttpBinding" contract="WcfService1.IContactService"></endpoint>
+				<host>
+					<baseAddresses>
+						<add baseAddress="http://localhost:8000/" />
+					</baseAddresses>
+				</host>
+			</service>
+		</services>
+		<behaviors>
+			<serviceBehaviors>
+				<behavior name="mexBehavior">
+					<serviceMetadata httpGetEnabled="true" />
+				</behavior>
+				<behavior name="debug">
+					<serviceDebug includeExceptionDetailInFaults="true" />
+				</behavior>
+			</serviceBehaviors>
+		</behaviors>
+	</system.serviceModel>
+	<entityFramework>
+		<providers>
+			<provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+		</providers>
+	</entityFramework>
+</configuration>
+
+
+
+6. Добавить инсталлер в конструкторе (Service.cs)
+И можно задать параметры если нужно 
+
+
+
+
+7. Собрать решение  (Сборка/собрать)
+
+
+
+8. В пуске найти консоль - Developer Command Prompt for VS
+
+- Открыть от имени Администратора
+
+Команды:
+- installutil -i путь(правой кнопкой по проекту Windows службы и открыть папку в проводнике) + bin\Debug  + название exe файла  (Установка виндовс службы) 
+- installutil -u путь(правой кнопкой по проекту Windows службы и открыть папку в проводнике) + bin\Debug  + название exe файла  (Удаление виндовс службы) 
+
+
+
+
+
+9. Открываем "Управление" (правой кнопкой по компьютеру)
+
+
+10. Находим нашу службу, открываем свойства ее, Вход в систему, Выбираем вход с учетной записью
+
+
+
+11. На бэке подключаем Windows служба как WCF в Connection Service, url берем с LocalHosta службы(адрес на локальный хост мы создали в App.Config)

@@ -1,0 +1,70 @@
+Порядок работы с WCF:
+
+1. Создание проекта 
+"Приложение службы WCF"
+
+
+
+2. Меняем интерфейс IService1 как нам надо 
+- Название
+- Создаем [OperationContract] столько сколько медотов нам надо
+- указываем им тип вовразата и параметры если надо
+
+
+3. Осуществляем Методы в Service1
+
+
+4. В web.config подключаемся к базе 
+
+<connectionStrings>
+    <add name="DBConnection" connectionString="data source=(localdb)\MSSQLLocalDB;Initial Catalog=названиебазы;Integrated Security=True;" providerName="System.Data.SqlClient"/>    
+</connectionStrings>
+
+
+
+
+5. Создаем модели и контекст
+public class ContactContext : DbContext
+{
+    public DbSet<Contact> Contacts { get; set; }
+
+    public ContactContext() : base("DBConnection")
+    { }
+}
+
+
+
+
+6. в методах подключаемся к базе с помощью using
+using (ContactContext db = new ContactContext())
+{
+}
+
+
+
+7. Запускаем службу в переходим по ссылке Service1.svc
+
+
+8. Копируем адрес localhost в svcutil.exe
+
+
+9. Тестим сервис в приложении SoapUI
+
+
+10. Подключаем сервис к беку
+- Перехходим в Connected Services 
+- В разделе "Подключенные служюбы" находим "Другие службы"
+- Выбираем Поставщик Microsoft WCF Web Service Reference
+- В URL вбиваем адрес локального хоста службы 
+
+
+Доп: 
+- В случае изменения WCF нужно обновлять подключенный сервис 
+- Для подключения сервиса в контроллере: 
+
+using Название сервиса(в Connected Service);
+
+в методах создаем объект с методами из службы 
+НазваниеИнтерфейсаClient ms = new НазваниеИнтерфейсаClient();
+
+вызывать у ms.методы() 

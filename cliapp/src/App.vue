@@ -78,4 +78,45 @@ span {
   align-items: center;
 }
 
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgb(0, 0, 0, 0.9);
+  animation: showPopUp 2s linear;
+}
+
+@keyframes showPopUp {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.modal_window {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: 20px;
+  font-size: 35px;
+  background: white;
+  border-radius: 5px;
+  color: black;
+  max-width: 80%;
+}
+
 </style>

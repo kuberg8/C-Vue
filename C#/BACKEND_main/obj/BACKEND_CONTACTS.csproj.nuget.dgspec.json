@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Desktop\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj": {}
+    "C:\\Users\\User\\Desktop\\C# Vue\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Desktop\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj": {
+    "C:\\Users\\User\\Desktop\\C# Vue\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Desktop\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\C# Vue\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj",
         "projectName": "BACKEND_CONTACTS",
-        "projectPath": "C:\\Users\\User\\Desktop\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj",
+        "projectPath": "C:\\Users\\User\\Desktop\\C# Vue\\C#\\BACKEND_main\\BACKEND_CONTACTS.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Desktop\\C#\\BACKEND_main\\obj\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\C# Vue\\C#\\BACKEND_main\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -125,36 +125,11 @@
             }}</span>
           </td>
           <td>
-            {{ user.documentType ? user.documentType : "-" }}
-
-            <div>{{ user.series ? "Серия - " + user.series : null }}</div>
-            <div>
-              {{ user.pasportNumber ? "Номер - " + user.pasportNumber : null }}
-            </div>
-            <div>{{ user.issuedBy ? "Выдан - " + user.issuedBy : null }}</div>
-            <div>
-              {{
-                user.documentType === "Паспорт"
-                  ? "Дата выдачи - " + user.dateOfIssue
-                  : null
-              }}
-            </div>
-
-            <div>
-              {{
-                user.birthCertificate
-                  ? "Номер  свидетельства: " + user.birthCertificate
-                  : null
-              }}
-            </div>
-            <div>
-              {{
-                user.driveNumber
-                  ? "Номер водительского удостоверения: " + user.driveNumber
-                  : null
-              }}
-            </div>
-            <span v-show="user.fileId" class="save icon" @click="save(user.fileId)">
+            <span
+              v-show="user.fileId"
+              class="save icon"
+              @click="save(user.fileId)"
+            >
               <i class="fas fa-file-download"></i>
             </span>
             <span class="delete icon" @click="deleteUser(user.id)"
@@ -323,8 +298,8 @@ export default {
     },
     deleteUser(id) {
       contactAPI.deleteContact(id).then(() => {
-          window.location.reload()
-      })
+        window.location.reload();
+      });
     },
     errorModal(message = "Извините, что-то пошло не так") {
       this.errorMessage = message;
@@ -517,47 +492,6 @@ td:last-child {
   position: absolute;
   right: 15px;
   top: 22px;
-}
-
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgb(0, 0, 0, 0.9);
-  animation: showPopUp 2s linear;
-}
-
-@keyframes showPopUp {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.modal_window {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: auto;
-  padding: 20px;
-  font-size: 35px;
-  background: white;
-  border-radius: 5px;
-  color: black;
-  max-width: 80%;
 }
 
 @media screen and (min-width: 990px) {

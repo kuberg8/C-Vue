@@ -44,13 +44,6 @@ namespace BACKEND_CONTACTS.Controllers
                     DateOfBirthday = data.DateOfBirthday,
                     Email = data.Email,
                     Phone = data.Phone,
-                    DocumentType = data.DocumentType,
-                    Series = data.Series,
-                    PasportNumber = data.PasportNumber,
-                    IssuedBy = data.IssuedBy,
-                    DateOfIssue = data.DateOfIssue,
-                    BirthCertificate = data.BirthCertificate,
-                    DriveNumber = data.DriveNumber,
                     Message = data.Message
                 };
 
@@ -165,6 +158,22 @@ namespace BACKEND_CONTACTS.Controllers
                 }
             }
             return NotFound();
+        }
+
+
+        [HttpPut]
+        public StatusCodeResult Put([FromBody] Contact data)
+        {
+            try
+            {
+                db.Contacts.Update(data);
+                db.SaveChanges();
+                return StatusCode(200);
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

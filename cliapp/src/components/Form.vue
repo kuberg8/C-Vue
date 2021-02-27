@@ -96,105 +96,6 @@
         />
 
         <span class="label"
-          >Тип документа
-          <b>*</b>
-          <span
-            v-show="
-              $v.formData.document.$dirty && !$v.formData.document.required
-            "
-            class="required"
-            >Поле обязательно для заполнения</span
-          >
-        </span>
-        <select
-          name="document"
-          v-model="formData.document"
-          :class="{
-            errorClass:
-              $v.formData.document.$dirty && !$v.formData.document.required,
-          }"
-        >
-          <option value="Паспорт" selected>Паспорт</option>
-          <option value="Свидетельство о рождении"
-            >Свидетельство о рождении</option
-          >
-          <option value="Водительское удостоверение"
-            >Водительское удостоверение</option
-          >
-        </select>
-
-        <span class="block_document" v-show="formData.document === 'Паспорт'">
-          <span class="label"
-            >Серия
-            <b>*</b>
-          </span>
-          <input
-            name="series"
-            type="number"
-            placeholder="Введите серию паспорта"
-            v-model.number="formData.series"
-            :class="{ errorClass: error && formData.series === '' }"
-          />
-
-          <span class="label">Номер<b>*</b></span>
-          <input
-            name="pasportNumber"
-            type="number"
-            placeholder="Введите номер паспорта"
-            v-model.number="formData.pasportNumber"
-            :class="{ errorClass: error && formData.pasportNumber === '' }"
-          />
-
-          <span class="label">Дата выдачи<b>*</b></span>
-          <input
-            type="date"
-            name="dateOfIssue"
-            placeholder="Введите дату выдачи паспорта"
-            v-model.trim="formData.dateOfIssue"
-            :class="{ errorClass: error && formData.dateOfIssue === '' }"
-          />
-
-          <span class="label">Кем выдан<b>*</b></span>
-          <input
-            name="issuedBy"
-            placeholder="Введите кем выдан паспорт"
-            v-model.trim="formData.issuedBy"
-            :class="{ errorClass: error && formData.issuedBy === '' }"
-          />
-        </span>
-
-        <span
-          class="block_document"
-          v-show="formData.document === 'Свидетельство о рождении'"
-        >
-          <span class="label">Свидетельство о рождении<b>*</b></span>
-          <input
-            name="birthCertificate"
-            type="number"
-            placeholder="Введите номер свидетельства"
-            v-model.number="formData.birthCertificate"
-            :class="{ errorClass: error && formData.birthCertificate === '' }"
-          />
-        </span>
-
-        <span
-          class="block_document"
-          v-show="formData.document === 'Водительское удостоверение'"
-        >
-          <span class="label"
-            >Номер водительского удостоверения
-            <b>*</b>
-          </span>
-          <input
-            name="driveNumber"
-            type="number"
-            placeholder="Введите номер водительского"
-            v-model.number="formData.driveNumber"
-            :class="{ errorClass: error && formData.driveNumber === '' }"
-          />
-        </span>
-
-        <span class="label"
           >Контактный телефон
           <b>*</b>
           <span
@@ -320,17 +221,6 @@ export default {
         name: "",
         middleName: "",
         dateOfBirthday: "",
-
-        document: "",
-
-        series: "",
-        pasportNumber: "",
-        issuedBy: "",
-        dateOfIssue: "",
-
-        birthCertificate: "",
-        driveNumber: "",
-
         phone: "",
         Email: "",
         Message: "",
@@ -343,7 +233,6 @@ export default {
       name: { required },
       dateOfBirthday: { required },
       phone: { required, phoneValid: isPhone },
-      document: { required },
       Email: { required, email },
       Message: { required },
     },
@@ -370,52 +259,9 @@ export default {
         return;
       }
 
-      switch (form.document) {
-        case "Паспорт":
-          if (
-            form.series === "" ||
-            form.pasportNumber === "" ||
-            form.issuedBy === "" ||
-            form.dateOfIssue === ""
-          ) {
-            this.error = true;
-            return;
-          }
-          break;
-        case "Свидетельство о рождении":
-          if (form.birthCertificate === "") {
-            this.error = true;
-            return;
-          }
-          break;
-        case "Водительское удостоверение":
-          if (form.driveNumber === "") {
-            this.error = true;
-            return;
-          }
-          break;
-      }
-
-      let obj = {
-        Name: this.formData.name,
-        LastName: this.formData.surname,
-        MiddleName: this.formData.middleName,
-        DateOfBirthday: this.formData.dateOfBirthday,
-        Email: this.formData.Email,
-        Phone: this.formData.phone,
-        DocumentType: this.formData.document,
-        Series: +this.formData.series,
-        PasportNumber: +this.formData.pasportNumber,
-        IssuedBy: this.formData.issuedBy,
-        DateOfIssue: this.formData.dateOfIssue,
-        BirthCertificate: +this.formData.birthCertificate,
-        DriveNumber: +this.formData.driveNumber,
-        Message: this.formData.Message,
-      };
-
       const formData = new FormData();
-      for (let key in obj) {
-        formData.append(key, obj[key]);
+      for (let key in this.formData) {
+        formData.append(key, this.formData[key]);
       }
       formData.append("Avatar", this.$refs.file.files[0]);
 

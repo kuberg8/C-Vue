@@ -101,12 +101,18 @@ namespace BACKEND_CONTACTS.Controllers
         }
 
 
-        public async Task<JsonResult> Index(string SortName = "Name", bool Descending = false, int Page = 1, int PageSize = 20)
+        public async Task<JsonResult> Index(string Search, string SortName = "Name", bool Descending = false, int Page = 1, int PageSize = 20)
         {
             IQueryable<Contact> users = db.Contacts;
 
+
+            if (Search != null)
+            {
+                users = users.Where(t => t.Name.Contains(Search) || t.LastName.Contains(Search) || t.MiddleName.Contains(Search));
+            }
+
             int total_count = users.Count();
-           
+
             switch (SortName)
             {
                 case "Name":
@@ -128,7 +134,6 @@ namespace BACKEND_CONTACTS.Controllers
                     users = users.OrderBy(t => t.Id);
                     break;
             }
-
 
             try 
             {

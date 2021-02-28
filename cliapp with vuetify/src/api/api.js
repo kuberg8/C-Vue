@@ -8,14 +8,21 @@ const request = axios.create({
 });
 
 export const contactAPI = {
-  getContact(sortName = "Name", Descending = false, page = 1, PageSize = 5) {
+  getContact(
+    sortName = "Name",
+    Descending = false,
+    page = 1,
+    PageSize = 5,
+    search = ""
+  ) {
     sortName = sortName[0].toLocaleUpperCase() + sortName.slice(1);
     return request.get(
-      `Home/Index?sortName=${sortName}&descending=${Descending}&page=${page}&pageSize=${PageSize}`
+      `Home/Index?sortName=${sortName}&descending=${Descending}&page=${page}&pageSize=${PageSize}${search &&
+        "&search=" + search}`
     );
   },
-  addContact(obj) {
-    return request.post("Home/Post", obj, {
+  addContact(contact) {
+    return request.post("Home/Post", contact, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -23,5 +30,8 @@ export const contactAPI = {
   },
   deleteContact(id) {
     return request.delete(`Home/Delete?id=${id}`);
+  },
+  updateContact(contact) {
+    return request.put("Home/Put", contact);
   },
 };

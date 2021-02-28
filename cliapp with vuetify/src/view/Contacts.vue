@@ -7,6 +7,7 @@
         label="Search"
         single-line
         hide-details
+        @input="getContact"
       ></v-text-field>
     </v-card-title>
     <v-data-table
@@ -17,17 +18,13 @@
       :options.sync="options"
       :server-items-length="totalItems"
     >
+      <template v-slot:[`item.phone`]="{ item }">
+        <div>
+          {{ item.phone | phone }}
+        </div>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div>
-          <v-btn
-            v-if="item.fileId"
-            class="mx-2"
-            icon
-            @click.stop="downloadAvatar(item.fileId)"
-            title="Скачать аватарку"
-          >
-            <v-icon dark> mdi-content-save </v-icon>
-          </v-btn>
           <v-btn
             class="mx-2"
             icon
@@ -44,6 +41,15 @@
             :loading="item.deleteLoading"
           >
             <v-icon dark> mdi-delete </v-icon>
+          </v-btn>
+          <v-btn
+            v-if="item.fileId"
+            class="mx-2"
+            icon
+            @click.stop="downloadAvatar(item.fileId)"
+            title="Скачать аватарку"
+          >
+            <v-icon dark> mdi-content-save </v-icon>
           </v-btn>
         </div>
       </template>
@@ -96,40 +102,16 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-text-field
-                  v-model="editUser.phone"
+                  v-model="muskPhone"
                   label="Phone"
+                  :maxlength="18"
                   :error-messages="phoneErrors"
                   @input="$v.editUser.phone.$touch()"
                   @blur="$v.editUser.phone.$touch()"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-menu
-                  ref="dateMenu"
-                  v-model="dateMenu"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="editUser.dateOfBirthday"
-                      label="Birthday date"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    ref="picker"
-                    v-model="editUser.dateOfBirthday"
-                    :max="new Date().toISOString().substr(0, 10)"
-                    min="1950-01-01"
-                    @change="saveDate"
-                  ></v-date-picker>
-                </v-menu>
+                <DatePicker v-model="editUser.dateOfBirthday" />
               </v-col>
             </v-row>
           </v-container>
@@ -144,7 +126,12 @@
           >
             Close
           </v-btn>
-          <v-btn color="blue darken-1" text @click="updateUser">
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="updateUser"
+            :loading="editLoading"
+          >
             Save
           </v-btn>
         </v-card-actions>
@@ -154,10 +141,11 @@
 </template>
 
 <script>
-// import Vue from 'vue'
+import Vue from "vue";
 import { contactAPI } from "@/api/api.js";
 import { validationMixin } from "vuelidate";
-import { required, maxLength, email } from "vuelidate/lib/validators";
+import { required, maxLength, email, numeric } from "vuelidate/lib/validators";
+import DatePicker from "@/components/DatePicker.vue";
 
 export default {
   mixins: [validationMixin],
@@ -166,9 +154,12 @@ export default {
       name: { required, maxLength: maxLength(10) },
       lastName: { required },
       middleName: { required },
-      phone: { required: (val) => val != 0 },
+      phone: { required: (val) => val != 0, numeric },
       email: { required, email },
     },
+  },
+  components: {
+    DatePicker,
   },
   data() {
     return {
@@ -192,6 +183,7 @@ export default {
       contacts: [],
       loadingContacts: false,
       editDialog: false,
+      editLoading: false,
       editUser: {
         name: null,
         lastName: null,
@@ -215,7 +207,8 @@ export default {
           this.options.page,
           this.options.itemsPerPage == -1
             ? this.totalItems
-            : this.options.itemsPerPage
+            : this.options.itemsPerPage,
+          this.search
         )
         .then((response) => {
           this.contacts = response.data.data;
@@ -243,14 +236,28 @@ export default {
     },
     updateUser() {
       this.$v.$touch();
-      if (this.$v.updateUser.$invalid) return;
-      //метод апдейта
-    },
-    saveDate(date) {
-      this.$refs.dateMenu.save(date);
+      if (this.$v.editUser.$invalid) return;
+      this.editLoading = true;
+      contactAPI
+        .updateContact(this.editUser)
+        .then(() => {
+          this.getContact();
+        })
+        .finally(() => {
+          this.editLoading = false;
+          this.editDialog = false;
+        });
     },
   },
   computed: {
+    muskPhone: {
+      get: function() {
+        return Vue.filter("phone")(this.editUser.phone);
+      },
+      set: function(value) {
+        this.editUser.phone = Vue.filter("toNumber")(value);
+      },
+    },
     nameErrors() {
       const errors = [];
       if (!this.$v.editUser.name.$dirty) return errors;
@@ -284,6 +291,7 @@ export default {
       const errors = [];
       if (!this.$v.editUser.phone.$dirty) return errors;
       !this.$v.editUser.phone.required && errors.push("Phone is required");
+      !this.$v.editUser.phone.numeric && errors.push("Must be valid phone");
       return errors;
     },
   },

@@ -9,7 +9,7 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-text-field
-        v-model="datePickerValue"
+        :value="datePickerValue | dateRU"
         label="Birthday date"
         prepend-icon="mdi-calendar"
         readonly
@@ -52,7 +52,7 @@ export default {
   computed: {
     datePickerValue: {
       get() {
-        return this.value;
+        return this.value.substring(0, 10);
       },
       set(val) {
         this.$emit("change", val);

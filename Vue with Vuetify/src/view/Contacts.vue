@@ -23,6 +23,11 @@
           {{ item.phone | phone }}
         </div>
       </template>
+      <template v-slot:[`item.dateOfBirthday`]="{ item }">
+        <div>
+          {{ item.dateOfBirthday | dateRU }}
+        </div>
+      </template>      
       <template v-slot:[`item.actions`]="{ item }">
         <div>
           <v-btn
@@ -184,13 +189,7 @@ export default {
       loadingContacts: false,
       editDialog: false,
       editLoading: false,
-      editUser: {
-        name: null,
-        lastName: null,
-        middleName: null,
-        phone: null,
-        email: null,
-      },
+      editUser: {},
       dateMenu: false,
     };
   },

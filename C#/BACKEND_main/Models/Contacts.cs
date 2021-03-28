@@ -13,7 +13,7 @@ namespace BACKEND_CONTACTS.Models
         public string Name { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
-        public string DateOfBirthday { get; set; }
+        public DateTime DateOfBirthday { get; set; }
         public string Email { get; set; }
         public long Phone { get; set; }
         public string Message { get; set; }

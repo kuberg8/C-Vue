@@ -24,7 +24,7 @@ namespace BACKEND_CONTACTS.Models
                         Name = "Армен",
                         LastName = "Веселов",
                         MiddleName = "Германович",
-                        DateOfBirthday = "2020-02-12",
+                        DateOfBirthday = new DateTime(2015, 7, 20),
 
                     },
                     new Contact
@@ -32,14 +32,14 @@ namespace BACKEND_CONTACTS.Models
                         Name = "Никита",
                         LastName = "Жуков",
                         MiddleName = "Олегович",
-                        DateOfBirthday = "1997-08-04",
+                        DateOfBirthday = new DateTime(2012, 1, 11),
                     },
                     new Contact
                     {
                         Name = "Амадей",
                         LastName = "Веденеев",
                         MiddleName = "Игоревич",
-                        DateOfBirthday = "2005-16-07",
+                        DateOfBirthday = new DateTime(1997, 4, 8),
 
                     },
                     new Contact
@@ -47,7 +47,7 @@ namespace BACKEND_CONTACTS.Models
                         Name = "Ренольд",
                         LastName = "Анников",
                         MiddleName = "Мстиславович",
-                        DateOfBirthday = "2008-04-09",
+                        DateOfBirthday = new DateTime(2000, 5, 30),
 
                     },
                     new Contact
@@ -55,7 +55,7 @@ namespace BACKEND_CONTACTS.Models
                         Name = "Камиль",
                         LastName = "Артёмов",
                         MiddleName = "Осипович",
-                        DateOfBirthday = "2011-05-01",
+                        DateOfBirthday = new DateTime(2021, 12, 1),
                     },
                     new Contact
                     {
@@ -82,7 +82,7 @@ namespace BACKEND_CONTACTS.Models
                         Name = "Степан",
                         LastName = "Исмайлов",
                         MiddleName = "Борисович",
-                        DateOfBirthday = "2016-02-11",
+                        DateOfBirthday = new DateTime(2011, 9, 14),
 
                     },
                     new Contact

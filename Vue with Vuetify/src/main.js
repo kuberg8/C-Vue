@@ -8,6 +8,7 @@ import Contacts from "./view/Contacts";
 import vuetify from "./plugins/vuetify";
 
 import "@/util/filters/numberFilters.js";
+import "@/util/filters/dateFilter.js";
 
 Vue.config.productionTip = false;
 Vue.use(Vuelidate);

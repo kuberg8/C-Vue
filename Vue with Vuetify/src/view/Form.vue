@@ -84,11 +84,6 @@ import { validationMixin } from "vuelidate";
 import { required, maxLength, email, numeric } from "vuelidate/lib/validators";
 import DatePicker from "@/components/DatePicker.vue";
 
-// const isPhone = (value) =>
-//   /(\+7|8)[- _]*\(?[- _]*(\d{3}[- _]*\)?([- _]*\d){7}|\d\d[- _]*\d\d[- _]*\)?([- _]*\d){6})/g.test(
-//     value
-//   );
-
 const isImage = (value) => {
   if (value && (value.type == "image/jpeg" || value.type == "image/png")) {
     return true;
@@ -124,7 +119,7 @@ export default {
         name: null,
         lastName: null,
         middleName: null,
-        dateOfBirthday: null,
+        dateOfBirthday: new Date().toISOString(),
         phone: 0,
         email: null,
         message: null,
